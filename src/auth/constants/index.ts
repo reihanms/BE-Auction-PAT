@@ -1,5 +1,4 @@
 export const jwtConstants = {
   secret: 'secretKey',
+  expired: '86400s',
 };
-
-// Do not expose this key publicly. This is for demo purposes.

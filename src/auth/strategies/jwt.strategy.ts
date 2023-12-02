@@ -12,18 +12,23 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         JwtStrategy.extractJWTFromCookie,
       ]),
       ignoreExpiration: false,
-      secretOrKey: jwtConstants.secret,
+      secretOrKey: 'secretKey',
     });
   }
 
   private static extractJWTFromCookie(req: Request): string | null {
-    if (req.cookies && req.cookies.access_token) {
-      return req.cookies.access_token;
+    if (req.cookies && req.cookies.token) {
+      return req.cookies.token;
     }
     return null;
   }
 
   async validate(payload: any) {
-    return { userId: payload.sub, username: payload.username };
+    return {
+      user_id: payload.sub,
+      username: payload.username,
+      name: payload.name,
+      expired: payload.exp,
+    };
   }
 }

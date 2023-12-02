@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id              Int        @id @default(autoincrement())
+  profile_picture String?    @db.VarChar(100)
+  username        String     @db.VarChar(100)
+  name            String?    @db.VarChar(100)
+  password        String     @db.VarChar(100)
+  phone_number    String     @db.VarChar(25)
+  address         String?    @db.VarChar(200)
+  created_at      DateTime   @default(now())
+  updated_at      DateTime   @default(now())
+  auctions        auctions[] @relation("UserAuction")
+  bids            bids[]     @relation("UserBid")
+}
+
+model auctions {
+  id            Int      @id @default(autoincrement())
+  auction_picture String @db.VarChar(100)
+  user_id       Int      @map("user_id")
+  user          users    @relation("UserAuction", fields: [user_id], references: [id])
+  title         String   @db.VarChar(100)
+  description   String   @db.VarChar(100)
+  start_bid     Int
+  highest_bid   Int      @default(0)
+  buy_out_price Int
+  expired       DateTime
+  is_complete   Boolean  @default(false) @db.TinyInt
+  created_at    DateTime @default(now())
+  updated_at    DateTime @default(now())
+  bids          bids[]   @relation("AuctionBid")
+}
+
+model bids {
+  id         Int      @id @default(autoincrement())
+  auction_id Int      @map("auction_id")
+  auction    auctions @relation("AuctionBid", fields: [auction_id], references: [id])
+  user_id    Int      @map("user_id")
+  user       users    @relation("UserBid", fields: [user_id], references: [id])
+  bid_price  Int
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+}
