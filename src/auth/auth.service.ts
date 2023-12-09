@@ -1,12 +1,13 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { LoginDto } from './dto/login.dto';
 import { jwtConstants } from './constants';
 import { omit } from 'lodash';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { compare } from 'bcrypt';
 import { RegisterDto } from './dto/register.dto';
+import { EditProfileDto } from './dto/edit-profile.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -15,6 +16,11 @@ export class AuthService {
   ) {}
 
   async signup(dto: RegisterDto) {
+    const emailExist = await this.dbService.users.findFirst({
+      where: {
+        email: dto.email,
+      },
+    });
     const usernameExist = await this.dbService.users.findFirst({
       where: {
         username: dto.username,
@@ -35,6 +41,9 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    if (emailExist) {
+      throw new HttpException('Email already used', HttpStatus.BAD_REQUEST);
+    }
 
     const createUser = await this.dbService.users.create({
       data: dto,
@@ -50,10 +59,7 @@ export class AuthService {
   async login(dto: LoginDto, res: Response) {
     const user = await this.dbService.users.findFirst({
       where: {
-        OR: [
-          { username: dto.usernameOrPhone },
-          { phone_number: dto.usernameOrPhone },
-        ],
+        OR: [{ email: dto.emailOrPhone }, { phone_number: dto.emailOrPhone }],
       },
     });
     if (!user) {
@@ -99,13 +105,56 @@ export class AuthService {
     );
     res.cookie('token', token, {
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
+      secure: false, // true kalo mau pake https
+      sameSite: 'none',
       expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
     });
     return {
       statusCode: 200,
       user: omit(user, ['password', 'created_at', 'updated_at']),
     };
+  }
+
+  async getProfile(userId: number) {
+    const user = await this.dbService.users.findFirst({
+      where: {
+        id: userId,
+      },
+      select: {
+        profile_picture: true,
+        username: true,
+        email: true,
+        name: true,
+        phone_number: true,
+        address: true,
+        auctions: true,
+        bids: true,
+        bids_won: true,
+        _count: true,
+      },
+    });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    }
+    return {
+      statusCode: 200,
+      message: 'Success',
+      data: user,
+    };
+  }
+
+  async editProfile(userId: number, dto: EditProfileDto) {
+    const updateUser = await this.dbService.users.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        ...dto,
+      },
+    });
+    if (updateUser) {
+      const userData = await this.getProfile(userId);
+      return userData;
+    }
   }
 }

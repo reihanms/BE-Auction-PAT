@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Req,
   Res,
   Post,
   UseGuards,
@@ -9,13 +8,16 @@ import {
   UsePipes,
   ValidationPipe,
   HttpCode,
+  Request,
+  Put,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { TransformPasswordPipe } from './strategies/transform-password.pipe';
+import { EditProfileDto } from './dto/edit-profile.dto';
 
 @Controller('api/auth')
 export class AuthController {
@@ -39,7 +41,17 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  getProfile(@Req() req) {
-    return req.user;
+  async getProfile(@Request() req: any) {
+    const userId = req.user.user_id;
+    return await this.authService.getProfile(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
+  @HttpCode(200)
+  @Put('profile')
+  async editProfile(@Request() req: any, @Body() dto: EditProfileDto) {
+    const userId = req.user.user_id;
+    return await this.authService.editProfile(userId, dto);
   }
 }

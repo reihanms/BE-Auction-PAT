@@ -1,0 +1,16 @@
+step step backend auction
+- back end using nest js typescript
+- database setup using mysql and prisma orm
+- authentication with cookies jwt
+- get profile, user auctions and user bids
+- uploader image to cloud with cloudinary
+- create auction
+- auction
+    * pemegang auction akan dikirim invoice dan masuk ke bid won
+- bid auction
+    * price_increment by latest bid
+    * highest bid ditampilkan
+    * gabisa nge bid auction sendiri
+    * bakal update highest bid
+- buyout auction
+    * update is_completed
