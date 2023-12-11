@@ -17,8 +17,5 @@ RUN npm run generate:prisma
 
 RUN npm run build
 
-# Expose port yang digunakan oleh aplikasi NestJS
-EXPOSE 3003
-
 # Command untuk menjalankan aplikasi ketika container dijalankan
 CMD ["npm", "start"]
