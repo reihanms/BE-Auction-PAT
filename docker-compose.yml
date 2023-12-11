@@ -1,9 +1,0 @@
-version: '1'
-services:
-  beauction:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: beauction
-    ports:
-      - "3003:3003"
