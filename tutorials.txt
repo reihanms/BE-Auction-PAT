@@ -14,3 +14,16 @@ step step backend auction
     * bakal update highest bid
 - buyout auction
     * update is_completed
+
+
+Deployment step
+- install docker and enable kubernetes
+- set Dockerfile and deployment.yaml
+- make a repository in docker hub
+- build docker => docker build -t reihanms/auction-be-pat .
+- push docker => docker push reihanms/auction-be-pat
+- generate deployment kubernetes => kubectl create -f deployment.yaml
+- get generated deployment kubernetes => kubectl get pods
+- log the generated deployment kubernetes => kubectl logs auction-be-pat-name
+- create service.yaml => kubectl create -f service.yaml
+- get service => kubectl get service
