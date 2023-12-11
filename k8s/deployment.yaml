@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auction-be-pat
+spec:
+  selector:
+    matchLabels:
+      app: auction-be-pat
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: auction-be-pat
+    spec:
+      containers:
+        - name: auction-be-pat
+          image: reihanms/auction-be-pat
+          ports:
+            - containerPort: 3000
