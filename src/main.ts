@@ -31,7 +31,7 @@ async function bootstrap() {
   //   allowedHeaders: '*',
   // };
   app.enableCors({
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
     origin: ['http://localhost:3000', '*'],
     credentials: true,
   });
