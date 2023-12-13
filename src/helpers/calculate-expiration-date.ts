@@ -5,7 +5,7 @@ export const calculateExpirationDate = (
 ): Date => {
   const expirationDate = new Date(currentDate);
   expirationDate.setDate(currentDate.getDate() + day);
-  expirationDate.setHours(hour, 0, 0, 0);
+  expirationDate.setHours(currentDate.getHours() + hour);
 
   return expirationDate;
 };
