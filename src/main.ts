@@ -11,6 +11,7 @@ async function bootstrap() {
     res.header('Access-Control-Allow-Headers', [
       'Content-Type',
       'Authorization',
+      'Cookie'
     ]);
     next();
   });

@@ -105,7 +105,7 @@ export class AuthService {
     );
     res.cookie('token', token, {
       httpOnly: true,
-      secure: false, // true kalo mau pake https
+      secure: true, // true kalo mau pake https
       sameSite: 'none',
       expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
     });
