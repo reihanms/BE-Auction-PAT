@@ -8,5 +8,9 @@ export class RegisterDto {
   @IsNotEmpty()
   email: string;
   @IsNotEmpty()
+  name: string;
+  @IsNotEmpty()
+  address: string;
+  @IsNotEmpty()
   password: string;
 }
