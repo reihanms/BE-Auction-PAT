@@ -364,23 +364,34 @@ export class AuctionService {
 
     const expiredAuctions = await this.dbService.auctions.findMany({
       where: {
-        expired: currentDateTime,
+        is_complete: false,
+        expired: {
+          lt: currentDateTime,
+        },
       },
     });
     if (expiredAuctions.length >= 1) {
       expiredAuctions.map(async (auction) => {
+        await this.dbService.auctions.update({
+          where: { id: auction.id },
+          data: { is_complete: true },
+        });
+
         const auction_winner = await this.dbService.bids.findFirst({
           where: { auction_id: auction.id },
           orderBy: [{ bid_price: 'desc' }],
           take: 1,
           select: {
             user_id: true,
+            auction_id: true,
           },
         });
-        await this.dbService.auctions.update({
-          where: { id: auction.id },
-          data: { is_complete: true, bidder_won_id: auction_winner.user_id },
-        });
+        if (auction_winner) {
+          await this.dbService.auctions.update({
+            where: { id: auction_winner.auction_id },
+            data: { is_complete: true, bidder_won_id: auction_winner.user_id },
+          });
+        }
       });
     }
   }
