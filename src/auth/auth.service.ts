@@ -103,11 +103,16 @@ export class AuthService {
         secret,
       },
     );
+    const expirationTimeInDays = 3;
+
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + expirationTimeInDays);
+
     res.cookie('token', token, {
       httpOnly: true,
       secure: true, // true kalo mau pake https
       sameSite: 'none',
-      expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+      expires: expirationDate,
     });
     return {
       statusCode: 200,

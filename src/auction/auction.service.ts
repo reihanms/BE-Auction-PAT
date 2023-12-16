@@ -10,7 +10,11 @@ export class AuctionService {
   constructor(private dbService: PrismaService) {}
 
   async getAuctions() {
-    const auctions = await this.dbService.auctions.findMany();
+    const auctions = await this.dbService.auctions.findMany({
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
     const data =
       auctions.length <= 0
         ? []
@@ -307,6 +311,9 @@ export class AuctionService {
         id: true,
         auction_id: true,
         bid_price: true,
+      },
+      orderBy: {
+        created_at: 'desc',
       },
     });
 
