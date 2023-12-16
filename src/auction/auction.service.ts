@@ -11,6 +11,9 @@ export class AuctionService {
 
   async getAuctions() {
     const auctions = await this.dbService.auctions.findMany({
+      where: {
+        is_complete: false,
+      },
       orderBy: {
         created_at: 'desc',
       },
