@@ -146,17 +146,18 @@ export class AuctionService {
     const { start_bid, highest_bid, price_increment, buy_out_price } =
       auctionData;
 
-    const expectedBidPrice = highest_bid == 0 ? start_bid : highest_bid;
+    const bid_at = highest_bid == 0 ? start_bid : highest_bid + price_increment;
+    // const expectedBidPrice = highest_bid == 0 ? start_bid : highest_bid;
 
-    if ((dto.bid_price - expectedBidPrice) % price_increment !== 0) {
+    // if ((dto.bid_price - expectedBidPrice) % price_increment !== 0) {
+    //   throw new HttpException(
+    //     `Bid price is not a valid increment of ${price_increment}`,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+    if (dto.bid_price < bid_at) {
       throw new HttpException(
-        `Bid price is not a valid increment of ${price_increment}`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    if (dto.bid_price <= expectedBidPrice) {
-      throw new HttpException(
-        `Minimum bid price is ${expectedBidPrice}`,
+        `Minimum bid price is ${bid_at}`,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -203,6 +204,17 @@ export class AuctionService {
   }
 
   async createBuyout(userId: number, dto: CreateBidDto) {
+    const is_owner = await this.dbService.auctions.findFirst({
+      where: {
+        user_id: userId,
+      },
+    });
+    if (is_owner) {
+      throw new HttpException(
+        'You cannot buyout your own auction!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const auctionData = await this.dbService.auctions.findFirst({
       where: {
         id: dto.auction_id,
