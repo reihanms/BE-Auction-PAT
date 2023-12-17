@@ -21,7 +21,13 @@ export class AuctionService {
     const data =
       auctions.length <= 0
         ? []
-        : auctions.map((item) => omit(item, ['created_at', 'updated_at']));
+        : auctions.map((item) => {
+            const bid_at = item.highest_bid + item.price_increment;
+            return {
+              ...omit(item, ['created_at', 'updated_at']),
+              bid_at,
+            };
+          });
 
     return {
       statusCode: 200,
@@ -86,6 +92,7 @@ export class AuctionService {
         buy_out_price: dto.buy_out_price,
         start_bid: dto.start_bid,
         user_id: userId,
+        highest_bid: dto.start_bid,
         expired,
       },
     });
