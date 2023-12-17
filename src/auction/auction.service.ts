@@ -294,6 +294,7 @@ export class AuctionService {
         user: true,
         bidder_won_id: true,
         highest_bid: true,
+        picture: true,
       },
     });
     const auction_winner = await this.dbService.users.findFirst({
@@ -315,6 +316,7 @@ export class AuctionService {
       message: 'Success',
       data: {
         auction_title: auction_data.title,
+        auction_picture: auction_data.picture,
         auction_owner: auction_data.user.name,
         auction_owner_email: auction_data.user.email,
         auction_winner,
