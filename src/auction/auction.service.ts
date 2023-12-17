@@ -70,11 +70,13 @@ export class AuctionService {
         name: true,
       },
     });
+    const bid_at = auction.highest_bid + auction.price_increment;
     return {
       statusCode: 200,
       message: 'Success',
       data: {
         ...omit(auction, ['user_id']),
+        bid_at,
         user,
       },
     };
@@ -92,7 +94,6 @@ export class AuctionService {
         buy_out_price: dto.buy_out_price,
         start_bid: dto.start_bid,
         user_id: userId,
-        highest_bid: dto.start_bid,
         expired,
       },
     });
