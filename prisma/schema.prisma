@@ -19,6 +19,7 @@ model users {
   password                String     @db.VarChar(100)
   phone_number            String     @db.VarChar(25)
   address                 String?    @db.VarChar(200)
+  about                   String?    @db.VarChar(200)
   created_at              DateTime   @default(now())
   updated_at              DateTime   @default(now())
   auctions                auctions[] @relation("UserAuction")

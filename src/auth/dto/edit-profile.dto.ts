@@ -11,4 +11,6 @@ export class EditProfileDto {
   phone_number: string;
   @IsOptional()
   address: string;
+  @IsOptional()
+  about: string;
 }
