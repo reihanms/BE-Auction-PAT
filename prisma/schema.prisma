@@ -12,7 +12,7 @@ datasource db {
 
 model users {
   id                      Int        @id @default(autoincrement())
-  profile_picture         String?    @db.VarChar(100)
+  profile_picture         String?    @db.VarChar(200)
   username                String     @db.VarChar(100)
   email                   String     @db.VarChar(100)
   name                    String?    @db.VarChar(100)
