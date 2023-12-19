@@ -348,6 +348,7 @@ export class AuctionService {
           const auction = await this.dbService.auctions.findFirst({
             where: {
               id: bid.auction_id,
+              is_complete: false,
             },
             select: {
               picture: true,
@@ -357,16 +358,16 @@ export class AuctionService {
               highest_bid: true,
             },
           });
-
-          return {
-            bid_id: bid.id,
-            auction_id: bid.auction_id,
-            bid_price: bid.bid_price,
-            auction_data: auction,
-          };
+          if (auction) {
+            return {
+              bid_id: bid.id,
+              auction_id: bid.auction_id,
+              bid_price: bid.bid_price,
+              auction_data: auction,
+            };
+          }
         }),
       );
-
       return {
         statusCode: 200,
         message: 'Success',
