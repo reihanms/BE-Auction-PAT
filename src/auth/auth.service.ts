@@ -132,6 +132,7 @@ export class AuthService {
         name: true,
         phone_number: true,
         address: true,
+        about: true,
         auctions: true,
         bids: true,
         bids_won: true,
