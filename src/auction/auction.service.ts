@@ -112,14 +112,16 @@ export class AuctionService {
   }
 
   async createBid(userId: number, dto: CreateBidDto) {
-    const is_owner = await this.dbService.auctions.findFirst({
+    const isOwner = await this.dbService.auctions.findFirst({
       where: {
         user_id: userId,
+        id: dto.auction_id,
       },
     });
-    if (is_owner) {
+
+    if (isOwner) {
       throw new HttpException(
-        'You cannot bid your own auction!',
+        'You cannot bid on your own auction!',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -204,12 +206,14 @@ export class AuctionService {
   }
 
   async createBuyout(userId: number, dto: CreateBidDto) {
-    const is_owner = await this.dbService.auctions.findFirst({
+    const isOwner = await this.dbService.auctions.findFirst({
       where: {
         user_id: userId,
+        id: dto.auction_id,
       },
     });
-    if (is_owner) {
+
+    if (isOwner) {
       throw new HttpException(
         'You cannot buyout your own auction!',
         HttpStatus.BAD_REQUEST,
@@ -358,6 +362,7 @@ export class AuctionService {
               highest_bid: true,
             },
           });
+
           if (auction) {
             return {
               bid_id: bid.id,
@@ -365,13 +370,19 @@ export class AuctionService {
               bid_price: bid.bid_price,
               auction_data: auction,
             };
+          } else {
+            return null;
           }
         }),
       );
+
+      // Filter out null values
+      const filteredBidsWithAuctionData = bidsWithAuctionData.filter(Boolean);
+
       return {
         statusCode: 200,
         message: 'Success',
-        data: bidsWithAuctionData,
+        data: filteredBidsWithAuctionData,
       };
     } else {
       return {
