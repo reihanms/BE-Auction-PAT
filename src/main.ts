@@ -11,7 +11,7 @@ async function bootstrap() {
     res.header('Access-Control-Allow-Headers', [
       'Content-Type',
       'Authorization',
-      'Cookie'
+      'Cookie',
     ]);
     next();
   });
@@ -33,7 +33,12 @@ async function bootstrap() {
   // };
   app.enableCors({
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
-    origin: ['http://localhost:3000', '*'],
+    origin: [
+      'http://localhost:3000',
+      'https://fe-auction-pat-production.up.railway.app',
+      'http://localhost:7082',
+      '*',
+    ],
     credentials: true,
   });
   await app.listen(process.env.PORT);
