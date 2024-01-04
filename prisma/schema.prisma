@@ -33,7 +33,7 @@ model auctions {
   user_id           Int      @map("user_id")
   user              users    @relation("UserAuction", fields: [user_id], references: [id])
   title             String   @db.VarChar(100)
-  description       String   @db.VarChar(200)
+  description       String   @db.VarChar(500)
   category          String   @db.VarChar(25)
   price_increment   Int
   start_bid         Int
